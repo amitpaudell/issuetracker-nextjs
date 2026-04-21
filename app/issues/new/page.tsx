@@ -8,6 +8,8 @@ import dynamic from 'next/dynamic';
 import { z } from 'zod';
 import { createIssueSchema } from '@/app/validationSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
+import ErrorMessage from '@/app/components/ErrorMessage';
+import Spinner from '@/app/components/Spinner';
 
 const SimpleMDE = dynamic(() => import('react-simplemde-editor'), {
   ssr: false,
@@ -26,6 +28,7 @@ const page = () => {
     resolver: zodResolver(createIssueSchema),
   });
   const [error, setError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   return (
     <div className="max-w-xl">
       {error && (
@@ -38,6 +41,7 @@ const page = () => {
         className=" space-y-5"
         onSubmit={handleSubmit(async (data) => {
           try {
+            setIsSubmitting(true);
             const response = await fetch('/api/issues', {
               method: 'POST',
               headers: {
@@ -60,11 +64,9 @@ const page = () => {
           placeholder="Title"
           {...register('title')}
         ></TextField.Root>
-        {errors.title && (
-          <Text color="red" as="p">
-            {errors.title.message}
-          </Text>
-        )}
+
+        <ErrorMessage>{errors.title?.message}</ErrorMessage>
+
         <Controller
           name="description"
           control={control}
@@ -72,12 +74,12 @@ const page = () => {
             <SimpleMDE placeholder="Description" {...field} />
           )}
         ></Controller>
-        {errors.description && (
-          <Text color="red" as="p">
-            {errors.description.message}
-          </Text>
-        )}
-        <Button>Submit new issue</Button>
+
+        <ErrorMessage>{errors.description?.message}</ErrorMessage>
+
+        <Button disabled={isSubmitting}>
+          Submit new issue{isSubmitting && <Spinner></Spinner>}
+        </Button>
       </form>
     </div>
   );
