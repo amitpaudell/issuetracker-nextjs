@@ -11,9 +11,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { ErrorMessage, Spinner } from '@/app/components';
 import { Issue } from '@/generated/prisma/client';
 
-const SimpleMDE = dynamic(() => import('react-simplemde-editor'), {
-  ssr: false,
-});
+import SimpleMDE from 'react-simplemde-editor';
 
 type IssueFormData = z.infer<typeof createIssueSchema>;
 
@@ -50,6 +48,7 @@ const IssueForm = ({ issue }: Props) => {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data),
+                cache: 'no-store',
               });
 
               if (!res.ok) {
@@ -63,6 +62,7 @@ const IssueForm = ({ issue }: Props) => {
                   'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(data),
+                cache: 'no-store',
               });
               if (!response.ok) {
                 setError('An unexpected error has occured ');
@@ -70,6 +70,7 @@ const IssueForm = ({ issue }: Props) => {
               }
             }
             router.push('/issues');
+            router.refresh();
           } catch (error) {
             setError('An unexpected error has occured');
             console.log(error);
