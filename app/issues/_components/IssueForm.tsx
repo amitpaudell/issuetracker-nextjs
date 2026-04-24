@@ -45,16 +45,29 @@ const IssueForm = ({ issue }: Props) => {
         onSubmit={handleSubmit(async (data) => {
           try {
             setIsSubmitting(true);
-            const response = await fetch('/api/issues', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify(data),
-            });
-            if (!response.ok) {
-              setError('An unexpected error has occured ');
-              return;
+            if (issue) {
+              const res = await fetch('/api/issues/' + issue.id, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data),
+              });
+
+              if (!res.ok) {
+                console.error('Failed to update issue');
+                return;
+              }
+            } else {
+              const response = await fetch('/api/issues', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+              });
+              if (!response.ok) {
+                setError('An unexpected error has occured ');
+                return;
+              }
             }
             router.push('/issues');
           } catch (error) {
@@ -83,7 +96,8 @@ const IssueForm = ({ issue }: Props) => {
         <ErrorMessage>{errors.description?.message}</ErrorMessage>
 
         <Button disabled={isSubmitting}>
-          Submit new issue{isSubmitting && <Spinner></Spinner>}
+          {issue ? 'Update issue' : 'Submit issue'}
+          {isSubmitting && <Spinner></Spinner>}
         </Button>
       </form>
     </div>
