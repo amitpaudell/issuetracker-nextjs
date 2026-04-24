@@ -1,10 +1,9 @@
-'use client';
 import { Button, Callout, TextField } from '@radix-ui/themes';
 import { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import 'easymde/dist/easymde.min.css';
-import dynamic from 'next/dynamic';
+
 import { z } from 'zod';
 import { createIssueSchema } from '@/app/validationSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
