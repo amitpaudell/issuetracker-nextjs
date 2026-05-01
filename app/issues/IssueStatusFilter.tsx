@@ -2,11 +2,11 @@
 
 import { Status } from '@/generated/prisma/enums';
 import { Select } from '@radix-ui/themes';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import React from 'react';
 
-const statues: { label: string; value: Status | null }[] = [
-  { label: 'All', value: null },
+const statues: { label: string; value?: Status }[] = [
+  { label: 'All' },
   { label: 'In Progress', value: 'IN_PROGRESS' },
   { label: 'Open', value: 'OPEN' },
   { label: 'Closed', value: 'CLOSED' },
@@ -14,17 +14,27 @@ const statues: { label: string; value: Status | null }[] = [
 
 const IssueStatusFilter = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
   return (
     <Select.Root
+      defaultValue={searchParams.get('status') || ''}
       onValueChange={(status) => {
-        const query = status === 'ALL' ? '' : `?status=${status}`;
+        const params = new URLSearchParams();
+        console.log(params);
+        if (status) {
+          params.append('status', status);
+        }
+        if (searchParams.get('orderBy')) {
+          params.append('orderBy', searchParams.get('orderBy')!);
+        }
+        const query = params.size ? '?' + params.toString() : '';
         router.push('/issues' + query);
       }}
     >
       <Select.Trigger />
       <Select.Content>
         {statues.map((status) => (
-          <Select.Item key={status.label} value={status.value ?? 'ALL'}>
+          <Select.Item key={status.label} value={status.value!}>
             {status.label}
           </Select.Item>
         ))}
