@@ -1,9 +1,7 @@
 'use client';
-
 import { Status } from '@/generated/prisma/enums';
 import { Select } from '@radix-ui/themes';
 import { useRouter, useSearchParams } from 'next/navigation';
-import React from 'react';
 
 const statues: { label: string; value?: Status }[] = [
   { label: 'All' },

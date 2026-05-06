@@ -1,9 +1,7 @@
 'use client';
-
 import { Issue, User } from '@/generated/prisma/client';
 import { Select } from '@radix-ui/themes';
 import { useQuery } from '@tanstack/react-query';
-import React, { useEffect, useState } from 'react';
 import { Skeleton } from '@/app/components';
 
 const AssigneeSelect = ({ issue }: { issue: Issue }) => {
